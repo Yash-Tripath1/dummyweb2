@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Urban Fork — Modern Indian Bistro & Coffeehouse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:        #1a1a1a;
+  --bg2:       #111111;
+  --bg3:       #222222;
+  --gold:      #DAA520;
+  --gold-lt:   #F0C040;
+  --gold-dk:   #B8860B;
+  --cream:     #F5F5DC;
+  --cream-dim: rgba(245,245,220,0.65);
+  --border:    rgba(218,165,32,0.2);
+  --shadow:    0 20px 60px rgba(0,0,0,0.6);
+}
+
+html { scroll-behavior: smooth; overflow-x: hidden; }
+
+body {
+  font-family: 'Lato', sans-serif;
+  background: var(--bg);
+  color: var(--cream);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Playfair Display', serif;
+  line-height: 1.2;
+}
+
+img { display: block; width: 100%; }
+
+a { text-decoration: none; color: inherit; }
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--gold-dk); border-radius: 3px; }
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+@keyframes waPulse {
+  0%   { box-shadow: 0 0 0 0   rgba(37,211,102,0.6); }
+  70%  { box-shadow: 0 0 0 16px rgba(37,211,102,0); }
+  100% { box-shadow: 0 0 0 0   rgba(37,211,102,0); }
+}
+@keyframes lineGrow {
+  from { width: 0; }
+  to   { width: 60px; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Scroll-reveal utility */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.8s cubic-bezier(.25,.46,.45,.94),
+              transform 0.8s cubic-bezier(.25,.46,.45,.94);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 900;
+  padding: 1.25rem 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.4s ease, padding 0.4s ease;
+}
+.navbar.scrolled {
+  background: rgba(17,17,17,0.97);
+  backdrop-filter: blur(12px);
+  padding: 0.875rem 5%;
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.02em;
+}
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  transition: color 0.3s;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.3s ease;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-cta {
+  background: var(--gold);
+  color: #1a1a1a;
+  padding: 0.6rem 1.5rem;
+  border-radius: 2px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background 0.3s, transform 0.3s;
+}
+.nav-cta:hover { background: var(--gold-lt); transform: translateY(-2px); }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+.hamburger span {
+  width: 24px; height: 2px;
+  background: var(--cream);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  display: block;
+}
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(rgba(0,0,0,0.62), rgba(0,0,0,0.62)),
+    url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=80') center/cover no-repeat;
+  transform: scale(1.05);
+  transition: transform 8s ease;
+}
+.hero-bg.loaded { transform: scale(1); }
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  animation: fadeUp 1.2s 0.3s ease both;
+}
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border);
+  padding: 0.4rem 1.2rem;
+  border-radius: 2px;
+}
+.hero h1 {
+  font-size: clamp(3.5rem, 9vw, 8rem);
+  font-weight: 800;
+  color: var(--cream);
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  text-shadow: 0 4px 30px rgba(0,0,0,0.5);
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--gold);
+  background: linear-gradient(135deg, var(--gold), var(--gold-lt), var(--gold));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+.hero-tagline {
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  margin-bottom: 3rem;
+}
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-gold {
+  background: var(--gold);
+  color: #1a1a1a;
+  padding: 1rem 2.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 2px solid var(--gold);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: inline-block;
+}
+.btn-gold:hover {
+  background: transparent;
+  color: var(--gold);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(218,165,32,0.3);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--cream);
+  padding: 1rem 2.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 2px solid rgba(245,245,220,0.3);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: inline-block;
+}
+.btn-outline:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-3px);
+}
+.hero-scroll {
+  position: absolute;
+  bottom: 2.5rem; left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--cream-dim);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  animation: float 3s ease-in-out infinite;
+}
+.hero-scroll-line {
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+}
+
+/* ============================================================
+   SECTION SHARED
+   ============================================================ */
+.section { padding: 6rem 5%; }
+.section-alt { background: var(--bg3); }
+
+.section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.875rem;
+}
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: var(--cream);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+.section-title em { font-style: italic; color: var(--gold); }
+.section-divider {
+  width: 60px; height: 2px;
+  background: var(--gold);
+  margin-bottom: 1.5rem;
+}
+.section-body {
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--cream-dim);
+  line-height: 1.9;
+  max-width: 520px;
+}
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.about-image-wrap {
+  position: relative;
+}
+.about-image-wrap::before {
+  content: '';
+  position: absolute;
+  top: -20px; left: -20px;
+  right: 20px; bottom: 20px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 0;
+}
+.about-image-wrap img {
+  border-radius: 2px;
+  height: 550px;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+  filter: brightness(0.9) saturate(1.1);
+  transition: filter 0.5s;
+}
+.about-image-wrap:hover img { filter: brightness(1) saturate(1.2); }
+
+.about-badge {
+  position: absolute;
+  bottom: -20px; right: -20px;
+  z-index: 2;
+  background: var(--gold);
+  color: #1a1a1a;
+  padding: 1.5rem;
+  text-align: center;
+  border-radius: 2px;
+}
+.about-badge-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+  display: block;
+}
+.about-badge-text {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.about-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+.about-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+}
+.about-feature-icon {
+  font-size: 1.5rem;
+  margin-top: 0.1rem;
+  flex-shrink: 0;
+}
+.about-feature h4 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--cream);
+  margin-bottom: 0.25rem;
+  font-family: 'Lato', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.about-feature p {
+  font-size: 0.825rem;
+  color: var(--cream-dim);
+  line-height: 1.6;
+}
+
+/* ============================================================
+   MENU
+   ============================================================ */
+.menu-section { background: var(--bg2); }
+
+.menu-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 4rem;
+}
+.menu-header .section-divider { margin: 0 auto 1.5rem; }
+
+.menu-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 3.5rem;
+  flex-wrap: wrap;
+}
+.menu-tab {
+  padding: 0.6rem 1.75rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Lato', sans-serif;
+}
+.menu-tab:hover,
+.menu-tab.active {
+  background: var(--gold);
+  color: #1a1a1a;
+  border-color: var(--gold);
+}
+
+.menu-panel { display: none; }
+.menu-panel.active { display: block; }
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  max-width: 960px;
+  margin: 0 auto;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  background: var(--bg2);
+  transition: background 0.3s;
+  position: relative;
+}
+.menu-item::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%; bottom: auto;
+  width: 3px; height: 0;
+  background: var(--gold);
+  transform: translateY(-50%);
+  transition: height 0.4s ease;
+}
+.menu-item:hover { background: rgba(218,165,32,0.05); }
+.menu-item:hover::after { height: 60%; }
+
+.menu-item-left h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--cream);
+  margin-bottom: 0.35rem;
+}
+.menu-item-left p {
+  font-size: 0.8rem;
+  color: var(--cream-dim);
+  font-weight: 300;
+  max-width: 280px;
+  line-height: 1.5;
+}
+.menu-item-tag {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.5rem;
+  border-radius: 2px;
+  margin-top: 0.5rem;
+}
+.menu-price {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gold);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   GALLERY
+   ============================================================ */
+.gallery-section { padding: 6rem 5%; }
+
+.gallery-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 3.5rem;
+}
+.gallery-header .section-divider { margin: 0 auto 1.5rem; }
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 280px 280px;
+  gap: 12px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.gallery-item {
+  overflow: hidden;
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+}
+.gallery-item:nth-child(1) { grid-column: 1; grid-row: 1 / 3; }
+.gallery-item:nth-child(2) { grid-column: 2 / 4; grid-row: 1; }
+.gallery-item:nth-child(3) { grid-column: 2 / 4; grid-row: 2; }
+.gallery-item:nth-child(4) { grid-column: 4; grid-row: 1 / 3; }
+
+.gallery-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(.25,.46,.45,.94), filter 0.5s;
+  filter: brightness(0.85) saturate(1.1);
+}
+.gallery-item:hover img {
+  transform: scale(1.07);
+  filter: brightness(1) saturate(1.3);
+}
+.gallery-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  display: flex;
+  align-items: flex-end;
+  padding: 1.5rem;
+}
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-overlay span {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ============================================================
+   RESERVATIONS STRIP
+   ============================================================ */
+.reserve-strip {
+  background: var(--gold);
+  padding: 3rem 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.reserve-strip-text h2 {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: #1a1a1a;
+  margin-bottom: 0.35rem;
+}
+.reserve-strip-text p {
+  color: rgba(26,26,26,0.7);
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+.btn-dark {
+  background: #1a1a1a;
+  color: var(--cream);
+  padding: 1rem 2.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 2px solid #1a1a1a;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+  display: inline-block;
+}
+.btn-dark:hover {
+  background: transparent;
+  color: #1a1a1a;
+  transform: translateY(-3px);
+}
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact-section {
+  background: var(--bg2);
+  padding: 6rem 5%;
+  text-align: center;
+}
+.contact-section .section-divider { margin: 0 auto 1.5rem; }
+.contact-section .section-body {
+  max-width: 600px;
+  margin: 0 auto 3.5rem;
+  text-align: center;
+}
+
+.contact-cards {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  max-width: 900px;
+  margin: 0 auto 3rem;
+}
+.contact-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2.5rem 2rem;
+  flex: 1;
+  min-width: 220px;
+  max-width: 280px;
+  text-align: center;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+.contact-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold-dk), var(--gold-lt));
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+}
+.contact-card:hover { transform: translateY(-6px); border-color: rgba(218,165,32,0.4); }
+.contact-card:hover::before { transform: scaleX(1); }
+
+.contact-card-icon {
+  font-size: 2rem;
+  margin-bottom: 1.25rem;
+  display: block;
+}
+.contact-card h3 {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.875rem;
+}
+.contact-card p {
+  font-size: 0.95rem;
+  color: var(--cream-dim);
+  line-height: 1.7;
+  font-weight: 300;
+}
+.contact-card a {
+  color: var(--cream-dim);
+  transition: color 0.3s;
+}
+.contact-card a:hover { color: var(--gold); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 2rem 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+.footer-copy {
+  font-size: 0.78rem;
+  color: var(--cream-dim);
+  text-align: center;
+}
+.footer-socials {
+  display: flex;
+  gap: 1rem;
+}
+.footer-social {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--cream-dim);
+  transition: all 0.3s;
+}
+.footer-social:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-3px); }
+
+/* ============================================================
+   WHATSAPP
+   ============================================================ */
+.wa-float {
+  position: fixed;
+  bottom: 2rem; right: 2rem;
+  z-index: 999;
+  width: 56px; height: 56px;
+  background: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.75rem;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+  animation: waPulse 2.5s ease-in-out infinite;
+  transition: transform 0.3s ease, background 0.3s;
+  text-decoration: none;
+}
+.wa-float:hover {
+  transform: scale(1.12);
+  background: #20bc5a;
+  animation: none;
+}
+.wa-float svg {
+  width: 28px; height: 28px;
+  fill: white;
+}
+
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
+.lightbox {
+  position: fixed; inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.95);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.lightbox.open { display: flex; animation: fadeIn 0.3s ease; }
+.lightbox img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 3px;
+  box-shadow: var(--shadow);
+}
+.lightbox-close {
+  position: absolute;
+  top: 1.5rem; right: 1.5rem;
+  background: none; border: none;
+  color: var(--cream);
+  font-size: 2rem;
+  cursor: pointer;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+.lightbox-close:hover { opacity: 1; }
+
+/* ============================================================
+   MOBILE NAV DRAWER
+   ============================================================ */
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed;
+    top: 0; right: -100%;
+    width: min(280px, 80vw);
+    height: 100vh;
+    background: var(--bg2);
+    flex-direction: column;
+    padding: 5rem 2.5rem 2.5rem;
+    gap: 1.75rem;
+    border-left: 1px solid var(--border);
+    transition: right 0.4s cubic-bezier(.25,.46,.45,.94);
+    z-index: 800;
+  }
+  .nav-links.open { right: 0; }
+  .nav-links a { font-size: 1rem; }
+  .nav-cta { display: none; }
+  .hamburger { display: flex; z-index: 900; }
+
+  .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .about-image-wrap::before { display: none; }
+  .about-image-wrap img { height: 320px; }
+  .about-badge { display: none; }
+  .about-features { grid-template-columns: 1fr; }
+
+  .menu-grid { grid-template-columns: 1fr; }
+
+  .gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(4, 200px);
+  }
+  .gallery-item:nth-child(1) { grid-column: 1; grid-row: 1 / 3; }
+  .gallery-item:nth-child(2) { grid-column: 2; grid-row: 1; }
+  .gallery-item:nth-child(3) { grid-column: 2; grid-row: 2; }
+  .gallery-item:nth-child(4) { grid-column: 1 / 3; grid-row: 3; }
+
+  .reserve-strip { flex-direction: column; text-align: center; }
+
+  .contact-cards { flex-direction: column; align-items: center; }
+  .contact-card { max-width: 100%; width: 100%; }
+
+  footer { flex-direction: column; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 3rem; }
+  .gallery-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, 220px);
+  }
+  .gallery-item { grid-column: 1 !important; grid-row: auto !important; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">✕</button>
+  <img src="" alt="" id="lightboxImg"/>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <a href="#" class="nav-logo">The Urban Fork</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">Our Story</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#contact">Visit Us</a></li>
+    <li><a href="https://wa.me/911234567890?text=Hi%2C%20I%27d%20like%20to%20book%20a%20table%20at%20The%20Urban%20Fork!" target="_blank" class="nav-cta">Book a Table</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">✦ Est. 2019 · Hazratganj, Lucknow ✦</div>
+    <h1>The <em>Urban</em> Fork</h1>
+    <p class="hero-tagline">Modern Indian Bistro &amp; Coffeehouse</p>
+    <div class="hero-buttons">
+      <a href="https://wa.me/911234567890?text=Hi%2C%20I%27d%20like%20to%20book%20a%20table%20at%20The%20Urban%20Fork!" target="_blank" class="btn-gold">Book a Table</a>
+      <a href="#menu" class="btn-outline">View Menu</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="about-grid">
+    <div class="about-image-wrap reveal">
+      <img
+        src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800&q=80"
+        alt="Beautifully plated Indian cuisine"
+        loading="lazy"
+      />
+      <div class="about-badge">
+        <span class="about-badge-num">5★</span>
+        <span class="about-badge-text">Rated Experience</span>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <div class="section-label">Our Story</div>
+      <h2 class="section-title">Where Tradition<br>Meets <em>Imagination</em></h2>
+      <div class="section-divider"></div>
+      <p class="section-body">
+        The Urban Fork was born from a simple obsession — to honour the soul of Indian cooking while dressing it in something entirely new. We source heirloom spices directly from family farms in Rajasthan and Karnataka, then let our chefs weave them into plates that feel at once deeply familiar and thrillingly unexpected.
+      </p>
+      <p class="section-body" style="margin-top:1rem;">
+        Every dish here is a conversation between memory and modernity. Pull up a chair. Let us tell you a story through food.
+      </p>
+      <div class="about-features" style="margin-top:2.5rem;">
+        <div class="about-feature">
+          <span class="about-feature-icon">🌿</span>
+          <div>
+            <h4>Farm Sourced</h4>
+            <p>Seasonal produce from verified local and regional farms.</p>
+          </div>
+        </div>
+        <div class="about-feature">
+          <span class="about-feature-icon">🔥</span>
+          <div>
+            <h4>Live Kitchen</h4>
+            <p>Watch your meal crafted in our open, theatre-style kitchen.</p>
+          </div>
+        </div>
+        <div class="about-feature">
+          <span class="about-feature-icon">☕</span>
+          <div>
+            <h4>Artisan Coffee</h4>
+            <p>Single-origin brews curated by our in-house barista team.</p>
+          </div>
+        </div>
+        <div class="about-feature">
+          <span class="about-feature-icon">🍸</span>
+          <div>
+            <h4>Craft Cocktails</h4>
+            <p>Indian botanicals, reimagined into signature evening pours.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="section menu-section" id="menu">
+  <div class="menu-header reveal">
+    <div class="section-label">Digital Menu</div>
+    <h2 class="section-title">A Taste of Tradition,<br><em>Reimagined</em></h2>
+    <div class="section-divider"></div>
+    <p class="section-body" style="margin:0 auto;">
+      Small plates to share, bold mains to savour, and cocktails that linger long after the last sip.
+    </p>
+  </div>
+
+  <div class="menu-tabs reveal">
+    <button class="menu-tab active" data-tab="small-plates">Small Plates</button>
+    <button class="menu-tab" data-tab="mains">Main Courses</button>
+    <button class="menu-tab" data-tab="cocktails">Cocktails</button>
+    <button class="menu-tab" data-tab="desserts">Desserts</button>
+  </div>
+
+  <!-- SMALL PLATES -->
+  <div class="menu-panel active" id="small-plates">
+    <div class="menu-grid">
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Pani Puri Shots</h3>
+          <p>Liquid chaat poured tableside, with tamarind foam and jaljeera dust.</p>
+          <span class="menu-item-tag">🌿 Vegan</span>
+        </div>
+        <div class="menu-price">₹350</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Truffle Naan</h3>
+          <p>Tandoor-fired naan brushed with black truffle butter and micro herbs.</p>
+          <span class="menu-item-tag">⭐ Chef's Pick</span>
+        </div>
+        <div class="menu-price">₹450</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Chaat Taco</h3>
+          <p>Crispy papdi shell, aloo tikki, pomegranate & green chutney drizzle.</p>
+          <span class="menu-item-tag">🌿 Vegan</span>
+        </div>
+        <div class="menu-price">₹380</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Lamb Seekh Sliders</h3>
+          <p>Charcoal-smoked seekh, saffron mayo, pickled onions in a brioche bun.</p>
+        </div>
+        <div class="menu-price">₹520</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Burrata & Mango Aamras</h3>
+          <p>Pugliese burrata, Alphonso aamras, toasted cumin oil, sea salt flakes.</p>
+          <span class="menu-item-tag">⭐ Seasonal</span>
+        </div>
+        <div class="menu-price">₹490</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Lobster Malai Crostini</h3>
+          <p>Butter-poached lobster, malai sauce, curry leaf oil, charred sourdough.</p>
+        </div>
+        <div class="menu-price">₹780</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAINS -->
+  <div class="menu-panel" id="mains">
+    <div class="menu-grid">
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Butter Chicken, Deconstructed</h3>
+          <p>Sous vide chicken breast, tomato makhani espuma, charred naan crumble.</p>
+          <span class="menu-item-tag">⭐ Signature</span>
+        </div>
+        <div class="menu-price">₹850</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Lamb Rogan Josh</h3>
+          <p>48-hour slow-braised Kashmiri lamb, saffron rice, crispy shallots.</p>
+        </div>
+        <div class="menu-price">₹950</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Paneer Wellington</h3>
+          <p>Tandoori paneer, spinach & walnut duxelles wrapped in golden puff pastry.</p>
+          <span class="menu-item-tag">🌿 Vegetarian</span>
+        </div>
+        <div class="menu-price">₹720</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Kerala Prawn Moilee</h3>
+          <p>Tiger prawns in coconut milk curry, turmeric appam, raw mango relish.</p>
+        </div>
+        <div class="menu-price">₹1,050</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Smoked Dal Makhani</h3>
+          <p>72-hour slow-cooked black lentils, hickory smoke, cultured butter finish.</p>
+          <span class="menu-item-tag">🌿 Vegetarian</span>
+        </div>
+        <div class="menu-price">₹580</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Duck Vindaloo</h3>
+          <p>Goan-spiced duck confit, coconut vinegar jus, wild mushroom pilaf.</p>
+          <span class="menu-item-tag">⭐ Chef's Pick</span>
+        </div>
+        <div class="menu-price">₹1,150</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COCKTAILS -->
+  <div class="menu-panel" id="cocktails">
+    <div class="menu-grid">
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>The Mumbai Mule</h3>
+          <p>Ginger-infused vodka, fresh lime, kokum syrup, spiced ginger beer.</p>
+          <span class="menu-item-tag">🍸 Bestseller</span>
+        </div>
+        <div class="menu-price">₹600</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Spiced Old Fashioned</h3>
+          <p>Bourbon, cardamom bitters, black pepper honey, smoked orange peel.</p>
+          <span class="menu-item-tag">⭐ Signature</span>
+        </div>
+        <div class="menu-price">₹700</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Rose & Lychee Martini</h3>
+          <p>Lychee vodka, rose water, elderflower, fresh lime, petal garnish.</p>
+        </div>
+        <div class="menu-price">₹650</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Masala Negroni</h3>
+          <p>Gin, chai-infused Campari, sweet vermouth, star anise smoke.</p>
+          <span class="menu-item-tag">🍸 Bestseller</span>
+        </div>
+        <div class="menu-price">₹680</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Tamarind Margarita</h3>
+          <p>Blanco tequila, tamarind shrub, fresh lime, chili-salt rim.</p>
+        </div>
+        <div class="menu-price">₹620</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Virgin Chaas Spritz</h3>
+          <p>Spiced buttermilk, cucumber, mint, tonic water. Non-alcoholic.</p>
+          <span class="menu-item-tag">🌿 Mocktail</span>
+        </div>
+        <div class="menu-price">₹320</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DESSERTS -->
+  <div class="menu-panel" id="desserts">
+    <div class="menu-grid">
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Gulab Jamun Lava Cake</h3>
+          <p>Warm chocolate cake, gulab jamun core, rose ice cream, pistachio brittle.</p>
+          <span class="menu-item-tag">⭐ Signature</span>
+        </div>
+        <div class="menu-price">₹420</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Mango Shrikhand Tart</h3>
+          <p>Hung curd tart, Alphonso mango curd, saffron gel, tuile shards.</p>
+          <span class="menu-item-tag">⭐ Seasonal</span>
+        </div>
+        <div class="menu-price">₹380</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Chai Crème Brûlée</h3>
+          <p>Masala chai–infused custard, caramelised sugar, cardamom shortbread.</p>
+        </div>
+        <div class="menu-price">₹350</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <h3>Kulfi Affogato</h3>
+          <p>House-made pista kulfi, double espresso pour, rose petals, nolen gur.</p>
+          <span class="menu-item-tag">🍸 Bestseller</span>
+        </div>
+        <div class="menu-price">₹390</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section" id="gallery">
+  <div class="gallery-header reveal">
+    <div class="section-label">Gallery</div>
+    <h2 class="section-title">Crafted to be <em>Remembered</em></h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item reveal" data-src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&q=80">
+      <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&q=80" alt="Indian food plating" loading="lazy"/>
+      <div class="gallery-overlay"><span>Small Plates</span></div>
+    </div>
+    <div class="gallery-item reveal reveal-delay-1" data-src="https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=800&q=80">
+      <img src="https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=800&q=80" alt="Restaurant interior" loading="lazy"/>
+      <div class="gallery-overlay"><span>The Dining Room</span></div>
+    </div>
+    <div class="gallery-item reveal reveal-delay-2" data-src="https://images.unsplash.com/photo-1514190051997-0f6f39ca5cde?w=800&q=80">
+      <img src="https://images.unsplash.com/photo-1514190051997-0f6f39ca5cde?w=800&q=80" alt="Indian curry" loading="lazy"/>
+      <div class="gallery-overlay"><span>Main Courses</span></div>
+    </div>
+    <div class="gallery-item reveal reveal-delay-3" data-src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80">
+      <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80" alt="Restaurant ambience" loading="lazy"/>
+      <div class="gallery-overlay"><span>Evening Ambience</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- RESERVATION STRIP -->
+<div class="reserve-strip">
+  <div class="reserve-strip-text">
+    <h2>Ready for an Unforgettable Evening?</h2>
+    <p>Reserve your table now — walk-ins welcome, but bookings recommended.</p>
+  </div>
+  <a href="https://wa.me/911234567890?text=Hi%2C%20I%27d%20like%20to%20book%20a%20table%20at%20The%20Urban%20Fork!" target="_blank" class="btn-dark">
+    Book via WhatsApp
+  </a>
+</div>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="section-label">Find Us</div>
+  <h2 class="section-title">Visit <em>Us</em></h2>
+  <div class="section-divider"></div>
+  <p class="section-body">
+    We're nestled in the heart of Hazratganj — Lucknow's most vibrant cultural corridor. Come for the food. Stay for the feeling.
+  </p>
+
+  <div class="contact-cards">
+    <div class="contact-card reveal">
+      <span class="contact-card-icon">📍</span>
+      <h3>Address</h3>
+      <p>12-A, Hazratganj<br>Lucknow — 226001<br>Uttar Pradesh, India</p>
+    </div>
+    <div class="contact-card reveal reveal-delay-1">
+      <span class="contact-card-icon">🕛</span>
+      <h3>Hours</h3>
+      <p>Open Daily<br>12:00 PM – 11:00 PM<br>Last orders at 10:30 PM</p>
+    </div>
+    <div class="contact-card reveal reveal-delay-2">
+      <span class="contact-card-icon">📞</span>
+      <h3>Reservations</h3>
+      <p>
+        <a href="tel:+911234567890">+91 12345 67890</a><br>
+        <a href="mailto:hello@urbanfork.in">hello@urbanfork.in</a><br>
+        Or chat on WhatsApp
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">The Urban Fork</div>
+  <p class="footer-copy">© 2025 The Urban Fork · Hazratganj, Lucknow · All rights reserved.</p>
+  <div class="footer-socials">
+    <a href="https://instagram.com" target="_blank" class="footer-social" aria-label="Instagram">📷</a>
+    <a href="https://facebook.com" target="_blank" class="footer-social" aria-label="Facebook">📘</a>
+    <a href="https://wa.me/911234567890" target="_blank" class="footer-social" aria-label="WhatsApp">💬</a>
+  </div>
+</footer>
+
+<!-- WHATSAPP FLOAT -->
+<a href="https://wa.me/911234567890?text=Hi%2C%20I%27d%20like%20to%20know%20more%20about%20The%20Urban%20Fork!" 
+   class="wa-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<script>
+// PAGE LOADER COMPLETE
+window.addEventListener('load', () => {
+  document.getElementById('heroBg').classList.add('loaded');
+});
+
+// NAVBAR SCROLL
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+// MOBILE MENU
+const hamburger = document.getElementById('hamburger');
+const navLinks  = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  navLinks.classList.toggle('open');
+});
+navLinks.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    hamburger.classList.remove('active');
+    navLinks.classList.remove('open');
+  });
+});
+
+// SCROLL REVEAL
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// MENU TABS
+const tabs   = document.querySelectorAll('.menu-tab');
+const panels = document.querySelectorAll('.menu-panel');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    panels.forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    const target = document.getElementById(tab.dataset.tab);
+    if (target) {
+      target.classList.add('active');
+      // Animate items in
+      target.querySelectorAll('.menu-item').forEach((item, i) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          item.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          item.style.opacity = '1';
+          item.style.transform = 'translateY(0)';
+        }, i * 60);
+      });
+    }
+  });
+});
+
+// GALLERY LIGHTBOX
+const lightbox     = document.getElementById('lightbox');
+const lightboxImg  = document.getElementById('lightboxImg');
+const lightboxClose = document.getElementById('lightboxClose');
+
+document.querySelectorAll('.gallery-item').forEach(item => {
+  item.addEventListener('click', () => {
+    lightboxImg.src = item.dataset.src;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+});
+
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+lightboxClose.addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// SMOOTH SCROLL
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href === '#') return;
+    e.preventDefault();
+    const target = document.querySelector(href);
+    if (target) {
+      window.scrollTo({
+        top: target.getBoundingClientRect().top + window.pageYOffset - 75,
+        behavior: 'smooth'
+      });
+    }
+  });
+});
+</script>
+</body>
+</html>
